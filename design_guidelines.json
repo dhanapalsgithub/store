@@ -1,0 +1,195 @@
+{
+  "project_name": "3 Star Provisional Store",
+  "app_type": "hybrid_fullstack",
+  "design_archetype": "Organic Kirana & Modern High-Trust Retail",
+  "theme_strategy": {
+    "default_mode": "light",
+    "has_toggle": true,
+    "light_bg": "#fdfbf7",
+    "light_card_bg": "#ffffff",
+    "dark_bg": "#0f172a",
+    "dark_card_bg": "#1e293b",
+    "brand_identity": "3 Star Provisional Store (3 ஸ்டார் மளிகை கடை) - Fresh, dependable neighborhood provisional store bringing quality flours (Attai), grains & provisions (Saram), and loose pack staples directly with transparent daily rates."
+  },
+  "typography": {
+    "heading_font": "Outfit, sans-serif",
+    "body_font": "DM Sans, sans-serif",
+    "regional_font": "Noto Sans Tamil, sans-serif",
+    "font_scale": {
+      "h1_hero": "text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight",
+      "h2_section": "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight",
+      "h3_title": "text-xl sm:text-2xl font-semibold",
+      "card_title": "text-lg font-bold",
+      "tamil_label": "text-lg sm:text-xl font-bold text-emerald-950 dark:text-emerald-100",
+      "english_sublabel": "text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider",
+      "body": "text-sm sm:text-base font-normal",
+      "caption": "text-xs font-medium"
+    }
+  },
+  "colors": {
+    "primary": {
+      "main": "#15803d",
+      "hover": "#166534",
+      "light": "#f0fdf4",
+      "dark": "#052e16",
+      "accent_gold": "#d97706",
+      "gold_hover": "#b45309"
+    },
+    "neutral": {
+      "bg_light": "#fdfbf7",
+      "card_light": "#ffffff",
+      "border_light": "#e2e8f0",
+      "text_main_light": "#0f172a",
+      "text_muted_light": "#64748b",
+      "bg_dark": "#0b1329",
+      "card_dark": "#162032",
+      "border_dark": "#1e293b",
+      "text_main_dark": "#f8fafc",
+      "text_muted_dark": "#94a3b8"
+    },
+    "status": {
+      "pending": "#f59e0b",
+      "shipped": "#3b82f6",
+      "delivered": "#10b981",
+      "paid": "#16a34a",
+      "unpaid": "#dc2626",
+      "out_of_stock": "#ef4444"
+    }
+  },
+  "layout_and_spacing": {
+    "container_padding": "px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto",
+    "card_padding": "p-4 sm:p-6",
+    "gap_scale": "gap-4 sm:gap-6 lg:gap-8",
+    "border_radius": "rounded-2xl",
+    "bento_grid_modes": {
+      "customer_store_grid": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6",
+      "admin_analytics_grid": "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6",
+      "order_list_grid": "grid grid-cols-1 gap-4"
+    }
+  },
+  "product_categories": [
+    {
+      "id": "attai",
+      "tamil_name": "அட்டை மாவு வகைகள்",
+      "english_name": "Attai (Flours)",
+      "description": "Premium quality wheat, rice, gram & millet flours packed fresh daily"
+    },
+    {
+      "id": "saram",
+      "tamil_name": "சரம் மளிகை பொருட்கள்",
+      "english_name": "Saram (Provisions & Grains)",
+      "description": "High grade rice, pulses, lentils, whole spices & oil packs"
+    },
+    {
+      "id": "loose_pack",
+      "tamil_name": "லூஸ் பேக் பொருட்கள்",
+      "english_name": "Loose Pack Items",
+      "description": "Custom quantity loose groceries, seeds, sugar, salt & dry goods"
+    }
+  ],
+  "image_urls": {
+    "hero_banner": "https://images.pexels.com/photos/28624931/pexels-photo-28624931.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "store_front": "https://images.pexels.com/photos/12419503/pexels-photo-12419503.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940",
+    "categories": {
+      "attai": "https://images.unsplash.com/photo-1705475388190-775066fd69a5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHw0fHxpbmRpYW4lMjBncm9jZXJ5JTIwc3BpY2VzJTIwZ3JhaW5zJTIwZmxvdXIlMjBwYWNrYWdlZCUyMGZvb2QlMjBwcm9kdWN0JTIwc2hvd2Nhc2V8ZW58MHx8fHwxNzg5NzEzNjI3fDA&ixlib=rb-4.1.0&q=85",
+      "saram": "https://images.unsplash.com/photo-1786301326154-3e040dc8db60?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHszfHxpbmRpYW4lMjBncm9jZXJ5JTIwc3BpY2VzJTIwZ3JhaW5zJTIwZmxvdXIlMjBwYWNrYWdlZCUyMGZvb2QlMjBwcm9kdWN0JTIwc2hvd2Nhc2V8ZW58MHx8fHwxNzg5NzEzNjI3fDA&ixlib=rb-4.1.0&q=85",
+      "loose_pack": "https://images.pexels.com/photos/7421306/pexels-photo-7421306.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940"
+    },
+    "sample_products": [
+      {
+        "id": "prod_1",
+        "tamil": "கோதுமை மாவு",
+        "english": "Wheat Atta",
+        "category": "attai",
+        "rate": 55,
+        "unit": "1 kg",
+        "image": "https://images.unsplash.com/photo-1645331465778-eb409d112198?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHszfHx3aGVhdCUyMGZsb3VyJTIwZ3JhaW4lMjBsZW50aWxzJTIwcmF3JTIwcmljZSUyMHB1bHNlcyUyMGluZGlhbiUyMGZvb2QlMjBpbmdyZWRpZW50c3xlbnwwfHx8fDE3ODk3MTM2MzN8MA&ixlib=rb-4.1.0&q=85"
+      },
+      {
+        "id": "prod_2",
+        "tamil": "பொன்னி அரிசி",
+        "english": "Ponni Raw Rice",
+        "category": "saram",
+        "rate": 62,
+        "unit": "1 kg",
+        "image": "https://images.unsplash.com/photo-1621956838481-f8f616950454?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1OTV8MHwxfHNlYXJjaHxfd2hlYXQlMjBmbG91ciUyMGdyYWluJTIwbGVudGlscyUyMHJhdyUyMHJpY2UlMjBwdWxzZXMlMjBpbmRpYW4lMjBmb29kJTIwaW5ncmVkaWVudHN8ZW58MHx8fHwxNzg5NzEzNjM3fDA&ixlib=rb-4.1.0&q=85"
+      },
+      {
+        "id": "prod_3",
+        "tamil": "துவரம் பருப்பு",
+        "english": "Toor Dal (Loose)",
+        "category": "loose_pack",
+        "rate": 140,
+        "unit": "1 kg",
+        "image": "https://images.unsplash.com/photo-1705475388190-775066fd69a5?crop=entropy&cs=srgb&fm=jpg&ixid=M3w4NjA1NTN8MHwxfHNlYXJjaHw0fHxpbmRpYW4lMjBncm9jZXJ5JTIwc3BpY2VzJTIwZ3JhaW5zJTIwZmxvdXIlMjBwYWNrYWdlZCUyMGZvb2QlMjBwcm9kdWN0JTIwc2hvd2Nhc2V8ZW58MHx8fHwxNzg5NzEzNjI3fDA&ixlib=rb-4.1.0&q=85"
+      }
+    ]
+  },
+  "key_components_to_build": [
+    {
+      "name": "NavigationHeader",
+      "description": "Sticky top bar with store logo (3 Star Provision), role badge (Admin/User switcher), mobile navigation drawer, cart button with badge counter, Tamil/English brand branding."
+    },
+    {
+      "name": "AuthScreen",
+      "description": "Mobile number + Password login card with Role toggle (Owner / Customer demo accounts option), sleek Tamil-welcoming banner."
+    },
+    {
+      "name": "CustomerDashboard",
+      "description": "Hero promo section with search bar + active category pill tabs (Attai / Saram / Loose Pack). Product cards displaying Tamil title prominently + English sublabel + rate/unit + dynamic quantity selector (+/-) + Add to Cart."
+    },
+    {
+      "name": "CartSheetDrawer",
+      "description": "Slide-out drawer with itemized summary, payment method choice (UPI / Cash on Delivery), address confirmation, and instant order placement."
+    },
+    {
+      "name": "AdminDashboard",
+      "description": "Multi-tab panel for Store Owner: 1) Business Analytics (Total Revenue, Net Profit, Total Bills, Avg Order Value), 2) Inventory & Rates Management with quick inline rate and stock editor, 3) Order Management with status dropdown (Pending, Shipped, Delivered) & Payment status marker (Paid/Unpaid), 4) Google Sheets Integration Setup & Live Sync Monitor."
+    },
+    {
+      "name": "CustomerAccountOrders",
+      "description": "Tabs for My Orders (status stepper, bill breakdown), My Wishlist, My Payment History (UPI/COD receipts record), Profile & Delivery Address management."
+    }
+  ],
+  "visual_enhancers": {
+    "glassmorphism": "backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border border-slate-200/80 dark:border-slate-800/80 shadow-sm",
+    "card_hover": "transition-all duration-200 hover:-translate-y-1 hover:shadow-xl hover:border-emerald-500/40",
+    "badge_styles": {
+      "attai": "bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-200 border-amber-200",
+      "saram": "bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-200 border-emerald-200",
+      "loose_pack": "bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-200 border-blue-200"
+    }
+  },
+  "testing_requirements": {
+    "data_testid_convention": "All interactive elements, forms, tab switches, cart items, rate edit inputs, order status changers MUST have explicit data-testid attributes in kebab-case.",
+    "sample_testids": [
+      "login-mobile-input",
+      "login-password-input",
+      "login-submit-button",
+      "nav-cart-button",
+      "category-tab-attai",
+      "category-tab-saram",
+      "category-tab-loose-pack",
+      "product-card-add-button",
+      "cart-checkout-button",
+      "admin-inventory-table",
+      "admin-inline-rate-input",
+      "admin-order-status-select",
+      "sheets-sync-now-button"
+    ]
+  },
+  "instructions_to_main_agent": [
+    "Follow the Tamil + English dual text format for product names consistently (e.g. கோதுமை மாவு / Wheat Atta).",
+    "Keep mobile views priority #1 with easy thumb-zone navigation, sticky cart button, and responsive grids.",
+    "Support Google Sheets configuration dialog with simulated or real Apps Script endpoint integration.",
+    "Ensure all state updates (Cart, Order Status, Inventory Rates) offer immediate UI feedback using Sonner toast notifications.",
+    "Do NOT use complete transparent backgrounds for headers or overlays."
+  ],
+  "UNIVERSAL_GUIDELINES_FOR_MAIN_AGENT": [
+    "Never use generic centered layouts or unstyled default HTML dropdowns.",
+    "Ensure high contrast in both light and dark mode with APCA WCAG standards.",
+    "Do not use transparent overlays under dropdowns or mobile menus.",
+    "Always provide micro-interactions for buttons, tabs, and card hovers.",
+    "Add explicit data-testid attributes to all buttons, inputs, tabs, table cells, and status badges."
+  ]
+}
