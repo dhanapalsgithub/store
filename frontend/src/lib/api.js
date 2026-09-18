@@ -39,4 +39,23 @@ export const statusBadge = (s) =>
     ? "bg-blue-100 text-blue-700"
     : "bg-amber-100 text-amber-700";
 
+export const STORE_WHATSAPP = "919941669513";
+
+export const waOrderLink = (order, user) => {
+  const lines = order.items.map((it) => `- ${it.name} x ${it.qty} = Rs.${(it.rate * it.qty).toFixed(2)}`).join("\n");
+  const msg = [
+    "New Order - 3 Star Grocery Store",
+    `Order ID: ${order.id}`,
+    `Name: ${user?.name || order.customerName || ""}`,
+    `Mobile: ${user?.mobile || order.customerMobile || ""}`,
+    "",
+    lines,
+    "",
+    `Total: Rs.${order.total}`,
+    `Payment: ${order.paymentMethod || "Cash on Delivery"} (${order.paymentStatus || "Unpaid"})`,
+    `Address: ${order.address || ""}`,
+  ].join("\n");
+  return `https://wa.me/${STORE_WHATSAPP}?text=${encodeURIComponent(msg)}`;
+};
+
 export default api;

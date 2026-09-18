@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { ClipboardList, CheckCircle2, Truck, Clock } from "lucide-react";
-import api, { fmt, statusBadge } from "@/lib/api";
+import { ClipboardList, CheckCircle2, Truck, Clock, MessageCircle } from "lucide-react";
+import api, { fmt, statusBadge, waOrderLink } from "@/lib/api";
+import { useAuth } from "@/App";
 
 const STEPS = ["Pending", "Shipped", "Delivered"];
 
@@ -22,6 +23,7 @@ function Stepper({ status }) {
 }
 
 export default function MyOrders() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState(null);
 
   useEffect(() => {
@@ -69,7 +71,13 @@ export default function MyOrders() {
                 <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${o.paymentStatus === "Paid" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"}`} data-testid={`my-order-payment-${o.id}`}>
                   {o.paymentStatus}{o.paymentMethod ? ` • ${o.paymentMethod}` : ""}
                 </span>
-                {o.address && <span className="text-[11px] text-slate-400 truncate max-w-[55%]">{o.address}</span>}
+                <div className="flex items-center gap-2">
+                  {o.address && <span className="text-[11px] text-slate-400 truncate max-w-[38%]">{o.address}</span>}
+                  <a data-testid={`order-whatsapp-${o.id}`} href={waOrderLink(o, user)} target="_blank" rel="noreferrer"
+                    className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 transition flex items-center gap-1">
+                    <MessageCircle size={11} /> WhatsApp
+                  </a>
+                </div>
               </div>
               <Stepper status={o.status} />
               <p className="text-[11px] font-semibold text-slate-500 mt-2" data-testid={`order-tracking-note-${o.id}`}>

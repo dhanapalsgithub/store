@@ -8,6 +8,7 @@ import MyOrders from "@/components/store/MyOrders";
 import Wishlist from "@/components/store/Wishlist";
 import Payments from "@/components/store/Payments";
 import Account from "@/components/store/Account";
+import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const TABS = [
   { id: "shop", label: "Shop", icon: <ShoppingBag size={14} /> },
@@ -54,7 +55,7 @@ export default function Store() {
     <div className="min-h-screen bg-[#fdfbf7]" data-testid="store-dashboard">
       <Header tabs={TABS} active={tab} onTab={setTab} cartCount={cartCount} onCart={() => setCartOpen(true)} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28">
-        {tab === "shop" && <Shop cart={cart} addToCart={addToCart} setQty={setQty} wishlistIds={wishlistIds} setWishlistIds={setWishlistIds} />}
+        {tab === "shop" && <Shop cart={cart} addToCart={addToCart} setQty={setQty} wishlistIds={wishlistIds} setWishlistIds={setWishlistIds} onOrderPlaced={() => setTab("orders")} />}
         {tab === "orders" && <MyOrders />}
         {tab === "wishlist" && <Wishlist addToCart={addToCart} openCart={() => setCartOpen(true)} wishlistIds={wishlistIds} setWishlistIds={setWishlistIds} />}
         {tab === "payments" && <Payments />}
@@ -67,6 +68,8 @@ export default function Store() {
           <ShoppingBag size={17} /> View Cart ({cartCount})
         </button>
       )}
+
+      <WhatsAppFloat />
 
       {cartOpen && (
         <CartDrawer cart={cart} setQty={setQty} onClose={() => setCartOpen(false)}

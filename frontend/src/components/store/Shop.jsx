@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Search, Plus, Minus, Heart, ShoppingCart } from "lucide-react";
+import { Search, Plus, Minus, Heart, ShoppingCart, Mic } from "lucide-react";
 import { toast } from "sonner";
 import api, { fmt, CATEGORIES, catBadge } from "@/lib/api";
+import VoiceOrder from "@/components/store/VoiceOrder";
 
 function ProductCard({ p, cartItem, addToCart, setQty, wished, onWish }) {
   const out = p.stock <= 0;
@@ -44,10 +45,11 @@ function ProductCard({ p, cartItem, addToCart, setQty, wished, onWish }) {
   );
 }
 
-export default function Shop({ cart, addToCart, setQty, wishlistIds, setWishlistIds }) {
+export default function Shop({ cart, addToCart, setQty, wishlistIds, setWishlistIds, onOrderPlaced }) {
   const [products, setProducts] = useState(null);
   const [cat, setCat] = useState("Attai");
   const [query, setQuery] = useState("");
+  const [voiceOpen, setVoiceOpen] = useState(false);
 
   useEffect(() => {
     api.get("/products").then((r) => setProducts(r.data)).catch(() => setProducts([]));
@@ -82,11 +84,17 @@ export default function Shop({ cart, addToCart, setQty, wishlistIds, setWishlist
         <div className="relative">
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">வணக்கம்! Fresh stock arrived</h2>
           <p className="text-emerald-100/80 text-sm mt-1">Daily fair rates on flours, provisions & loose pack items</p>
-          <div className="mt-4 flex items-center bg-white rounded-xl overflow-hidden max-w-md">
-            <span className="pl-4 text-slate-400"><Search size={16} /></span>
-            <input data-testid="product-search-input" value={query} onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search products… (e.g. மாவு, rice, oil)"
-              className="w-full px-3 py-3 text-sm text-slate-800 focus:outline-none" />
+          <div className="mt-4 flex items-center gap-2 max-w-md">
+            <div className="flex items-center bg-white rounded-xl overflow-hidden flex-1">
+              <span className="pl-4 text-slate-400"><Search size={16} /></span>
+              <input data-testid="product-search-input" value={query} onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search products… (e.g. மாவு, rice, oil)"
+                className="w-full px-3 py-3 text-sm text-slate-800 focus:outline-none" />
+            </div>
+            <button data-testid="voice-order-button" onClick={() => setVoiceOpen(true)}
+              className="bg-amber-400 hover:bg-amber-300 text-emerald-950 rounded-xl px-4 py-3 text-xs font-extrabold flex items-center gap-1.5 transition active:scale-95 shrink-0">
+              <Mic size={15} /> Voice
+            </button>
           </div>
         </div>
       </div>
@@ -118,6 +126,11 @@ export default function Shop({ cart, addToCart, setQty, wishlistIds, setWishlist
               wished={wishlistIds.includes(p.id)} onWish={() => toggleWish(p)} />
           ))}
         </div>
+      )}
+
+      {voiceOpen && (
+        <VoiceOrder products={products || []} onClose={() => setVoiceOpen(false)}
+          onPlaced={() => { setVoiceOpen(false); onOrderPlaced?.(); }} />
       )}
     </div>
   );
