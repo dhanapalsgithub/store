@@ -17,7 +17,7 @@ export default function Inventory() {
     setLoading(true);
     api.get("/products").then((r) => setProducts(r.data)).finally(() => setLoading(false));
   };
-  useEffect(load, []);
+  useEffect(() => { load(); }, []);
 
   const setEdit = (id, field, value) => setEdits((e) => ({ ...e, [id]: { ...e[id], [field]: value } }));
   const bumpStock = (id, delta) => {

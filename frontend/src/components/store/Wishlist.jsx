@@ -11,7 +11,7 @@ export default function Wishlist({ addToCart, openCart, wishlistIds, setWishlist
       setItems(r.data);
       setWishlistIds(r.data.map((p) => p.id));
     }).catch(() => setItems([]));
-  useEffect(load, [setWishlistIds]);
+  useEffect(() => { load(); }, [setWishlistIds]);
 
   const remove = async (p) => {
     try {

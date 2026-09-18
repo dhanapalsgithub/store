@@ -11,7 +11,7 @@ export default function SheetsSetup() {
     api.get("/setup/status").then((r) => setStatus(r.data)).catch(() => {});
     api.get("/setup/apps-script").then((r) => setCode(r.data.code)).catch(() => {});
   };
-  useEffect(load, []);
+  useEffect(() => { load(); }, []);
 
   const copy = () => {
     navigator.clipboard.writeText(code);
