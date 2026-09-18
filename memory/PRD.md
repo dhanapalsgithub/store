@@ -45,6 +45,11 @@ Full-stack web app "3 Star Provisional Store" with dual roles (Owner/Admin + Cus
 ### Iteration 5 (2026-09-18)
 - Voice Order moved from the shop hero to a **floating amber mic button stacked above the WhatsApp float** (bottom-left); `VoiceOrder` now fetches products itself and is owned by `Store.jsx` (works from any customer tab, not just Shop).
 
+### Iteration 6 (2026-09-18) — PWA
+- `public/manifest.json`: installable app "3 Star Grocery Store", standalone, portrait, emerald theme (#065f46), Shop/Orders shortcuts
+- Generated brand app icon (emerald + gold shopping bag + 3 stars) → `public/icons/` (192, 512, maskable 512, apple-touch 180)
+- `public/service-worker.js`: app-shell precache, network-first for /api (never cached), stale-while-revalidate for statics; registered in `index.js` for production builds only
+
 ## Backlog
 - P0: User deploys Apps Script and sets APPS_SCRIPT_URL; verify Sheets-mode seeding (45 rows) works
 - P1: Fix wishlist delete scoping for Sheets mode (composite key — currently deletes first ProductID match); printable bill/invoice PDF

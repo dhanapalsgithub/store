@@ -21,3 +21,11 @@ root.render(
     </QueryClientProvider>
   </React.StrictMode>,
 );
+
+// PWA: register service worker in production builds only (keeps dev hot-reload clean)
+if (process.env.NODE_ENV === "production" && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/service-worker.js").catch(() => {});
+  });
+}
+
