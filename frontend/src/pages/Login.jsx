@@ -51,7 +51,7 @@ export default function Login() {
             <StoreIcon size={14} /> Fresh • Fair • Fast
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight" data-testid="login-brand-title">
-            3 Star Provisional Store
+            3 Star Grocery Store
           </h1>
           <p className="font-tamil text-lg sm:text-xl font-bold text-amber-300 mt-1">3 ஸ்டார் மளிகை கடை</p>
           <p className="text-emerald-100/80 text-sm mt-3">தரமான அட்டை, சரம் &amp; லூஸ் பேக் பொருட்கள் — தினசரி நியாயமான விலையில்</p>

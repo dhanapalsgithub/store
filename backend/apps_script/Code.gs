@@ -1,5 +1,6 @@
 /**
- * 3 Star Provisional Store — Google Sheets API (Apps Script Web App)
+ * 3 Star Grocery Store — Google Sheets API (Apps Script Web App)
+ * Made by RI Billing Pro
  *
  * SETUP STEPS:
  * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1dVgh3ha6NXwP5G8dlsvNwLtzCLYltqe861xg4HQRvDo
@@ -26,7 +27,7 @@ function json(obj) {
 }
 
 function doGet() {
-  return json({ ok: true, data: { service: "3 Star Provisional Store Sheets API", time: new Date().toISOString() } });
+  return json({ ok: true, data: { service: "3 Star Grocery Store Sheets API", time: new Date().toISOString() } });
 }
 
 function doPost(e) {

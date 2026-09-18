@@ -12,7 +12,7 @@ export default function Header({ tabs, active, onTab, cartCount, onCart }) {
               <StoreIcon size={18} className="text-emerald-900" />
             </div>
             <div className="min-w-0">
-              <p className="font-extrabold text-sm sm:text-base leading-tight truncate">3 Star Provisional Store</p>
+              <p className="font-extrabold text-sm sm:text-base leading-tight truncate">3 Star Grocery Store</p>
               <p className="font-tamil text-[11px] text-amber-300 leading-tight">3 ஸ்டார் மளிகை கடை</p>
             </div>
           </div>

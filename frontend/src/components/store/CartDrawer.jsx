@@ -14,6 +14,10 @@ export default function CartDrawer({ cart, setQty, onClose, onPlaced }) {
 
   const placeOrder = async () => {
     if (items.length === 0) return;
+    if (!address.trim()) {
+      toast.error("Please enter your delivery address");
+      return;
+    }
     setPlacing(true);
     try {
       const { data } = await api.post("/orders", {
@@ -70,7 +74,7 @@ export default function CartDrawer({ cart, setQty, onClose, onPlaced }) {
         {items.length > 0 && (
           <div className="border-t border-slate-200 bg-white p-4 space-y-3">
             <div>
-              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1"><MapPin size={11} /> Delivery Address</label>
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1"><MapPin size={11} /> Delivery Address <span className="text-red-500">*</span></label>
               <textarea data-testid="cart-address-input" value={address} onChange={(e) => setAddress(e.target.value)} rows={2}
                 className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="Delivery address" />
             </div>

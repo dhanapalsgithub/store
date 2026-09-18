@@ -258,7 +258,7 @@ async def seed_data():
             "Password": hash_password(os.environ["OWNER_PASSWORD"]),
             "Role": "Owner", "Name": "Shalu (Owner)",
             "Email": os.environ.get("OWNER_EMAIL", ""),
-            "Address": "3 Star Provisional Store, Main Road", "UserType": "Wholesale",
+            "Address": "3 Star Grocery Store, Main Road", "UserType": "Wholesale",
         })
         logger.info("Seeded owner account")
     if not any(str(u.get("Mobile")) == "9000000002" for u in users):
@@ -401,7 +401,7 @@ def norm_txn(t: dict) -> dict:
 # ----------------------------------------------------------------------------
 @api_router.get("/")
 async def root():
-    return {"message": "3 Star Provisional Store API", "mode": store.mode}
+    return {"message": "3 Star Grocery Store API", "mode": store.mode}
 
 
 @api_router.get("/health")
@@ -519,6 +519,9 @@ async def delete_product(pid: str, user=Depends(owner_only)):
 async def place_order(body: OrderBody, user=Depends(current_user)):
     if not body.items:
         raise HTTPException(status_code=400, detail="Cart is empty")
+    address = (body.address or "").strip() or str(user.get("Address", "")).strip()
+    if not address:
+        raise HTTPException(status_code=400, detail="Delivery address is required")
     products = {str(p.get("ProductID")): p for p in await store.list_rows("Products")}
     items = []
     total = 0.0
@@ -547,7 +550,7 @@ async def place_order(body: OrderBody, user=Depends(current_user)):
         "CustomerName": user.get("Name", ""), "ItemsJSON": json.dumps(items),
         "TotalAmount": round(total, 2), "PaymentStatus": "Paid" if paid else "Unpaid",
         "PaymentMethod": body.paymentMethod, "Date": now, "Status": "Pending",
-        "Address": body.address or user.get("Address", ""),
+        "Address": address,
     }
     await store.insert_row("Orders", order)
     if paid:

@@ -45,7 +45,10 @@ export default function AdminOrders() {
                   <p className="text-xs text-slate-500 flex items-center gap-2 mt-0.5">
                     <Phone size={11} /> {o.customerMobile} • {o.customerName || "Customer"}
                   </p>
-                  {o.address && <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5"><MapPin size={11} /> {o.address}</p>}
+                  <p className="text-xs text-slate-500 flex items-center gap-1.5 mt-1 bg-amber-50 border border-amber-100 rounded-lg px-2.5 py-1.5" data-testid={`order-address-${o.id}`}>
+                    <MapPin size={12} className="text-amber-600 shrink-0" />
+                    <span className="font-semibold text-slate-600">{o.address || "No address provided"}</span>
+                  </p>
                 </div>
                 <div className="text-right">
                   <p className="text-xl font-extrabold text-emerald-700">{fmt(o.total)}</p>

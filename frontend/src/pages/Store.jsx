@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { ShoppingBag, ClipboardList, Heart, Receipt, UserCircle } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Shop from "@/components/store/Shop";
 import CartDrawer from "@/components/store/CartDrawer";
 import MyOrders from "@/components/store/MyOrders";
@@ -71,6 +72,7 @@ export default function Store() {
         <CartDrawer cart={cart} setQty={setQty} onClose={() => setCartOpen(false)}
           onPlaced={() => { setCart({}); setCartOpen(false); setTab("orders"); }} />
       )}
+      <Footer />
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { LayoutDashboard, Package, ClipboardList, Receipt, Sheet } from "lucide-react";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import Overview from "@/components/admin/Overview";
 import Inventory from "@/components/admin/Inventory";
 import AdminOrders from "@/components/admin/AdminOrders";
@@ -27,6 +28,7 @@ export default function Admin() {
         {tab === "transactions" && <AdminTransactions />}
         {tab === "setup" && <SheetsSetup />}
       </main>
+      <Footer />
     </div>
   );
 }

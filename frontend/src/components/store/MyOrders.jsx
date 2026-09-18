@@ -72,6 +72,12 @@ export default function MyOrders() {
                 {o.address && <span className="text-[11px] text-slate-400 truncate max-w-[55%]">{o.address}</span>}
               </div>
               <Stepper status={o.status} />
+              <p className="text-[11px] font-semibold text-slate-500 mt-2" data-testid={`order-tracking-note-${o.id}`}>
+                {o.status === "Delivered" ? "Delivered — நன்றி! Thank you for shopping with us."
+                  : o.status === "Shipped" ? "Your order is on the way — out for delivery."
+                  : o.status === "Cancelled" ? "This order was cancelled. Contact store for help."
+                  : "Order received — packing in progress at the store."}
+              </p>
             </div>
           ))}
         </div>
