@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Mic, X, Trash2, MapPin, Send, Square } from "lucide-react";
 import { toast } from "sonner";
 import api, { fmt, errMsg, waOrderLink } from "@/lib/api";
@@ -49,14 +49,19 @@ function parseVoiceOrder(text, products) {
   return [...found.values()];
 }
 
-export default function VoiceOrder({ products, onClose, onPlaced }) {
+export default function VoiceOrder({ onClose, onPlaced }) {
   const { user } = useAuth();
+  const [products, setProducts] = useState([]);
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState("");
   const [items, setItems] = useState([]);
   const [address, setAddress] = useState(user?.address || "");
   const [placing, setPlacing] = useState(false);
   const recRef = useRef(null);
+
+  useEffect(() => {
+    api.get("/products").then((r) => setProducts(r.data)).catch(() => {});
+  }, []);
 
   const start = () => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;

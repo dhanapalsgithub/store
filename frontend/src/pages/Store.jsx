@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { ShoppingBag, ClipboardList, Heart, Receipt, UserCircle } from "lucide-react";
+import { ShoppingBag, ClipboardList, Heart, Receipt, UserCircle, Mic } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Shop from "@/components/store/Shop";
@@ -9,6 +9,7 @@ import Wishlist from "@/components/store/Wishlist";
 import Payments from "@/components/store/Payments";
 import Account from "@/components/store/Account";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
+import VoiceOrder from "@/components/store/VoiceOrder";
 
 const TABS = [
   { id: "shop", label: "Shop", icon: <ShoppingBag size={14} /> },
@@ -21,6 +22,7 @@ const TABS = [
 export default function Store() {
   const [tab, setTab] = useState("shop");
   const [cartOpen, setCartOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [cart, setCart] = useState(() => {
     try { return JSON.parse(localStorage.getItem("sps_cart")) || {}; } catch { return {}; }
   });
@@ -55,7 +57,7 @@ export default function Store() {
     <div className="min-h-screen bg-[#fdfbf7]" data-testid="store-dashboard">
       <Header tabs={TABS} active={tab} onTab={setTab} cartCount={cartCount} onCart={() => setCartOpen(true)} />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6 pb-28">
-        {tab === "shop" && <Shop cart={cart} addToCart={addToCart} setQty={setQty} wishlistIds={wishlistIds} setWishlistIds={setWishlistIds} onOrderPlaced={() => setTab("orders")} />}
+        {tab === "shop" && <Shop cart={cart} addToCart={addToCart} setQty={setQty} wishlistIds={wishlistIds} setWishlistIds={setWishlistIds} />}
         {tab === "orders" && <MyOrders />}
         {tab === "wishlist" && <Wishlist addToCart={addToCart} openCart={() => setCartOpen(true)} wishlistIds={wishlistIds} setWishlistIds={setWishlistIds} />}
         {tab === "payments" && <Payments />}
@@ -69,7 +71,18 @@ export default function Store() {
         </button>
       )}
 
+      <button data-testid="voice-order-float-button" onClick={() => setVoiceOpen(true)}
+        className="fixed bottom-24 left-5 z-40 w-14 h-14 rounded-full bg-amber-400 hover:bg-amber-300 shadow-2xl flex items-center justify-center transition hover:scale-110 active:scale-95"
+        title="Voice Order — குரல் ஆர்டர்">
+        <Mic size={22} className="text-emerald-950" />
+      </button>
+
       <WhatsAppFloat />
+
+      {voiceOpen && (
+        <VoiceOrder onClose={() => setVoiceOpen(false)}
+          onPlaced={() => { setVoiceOpen(false); setTab("orders"); }} />
+      )}
 
       {cartOpen && (
         <CartDrawer cart={cart} setQty={setQty} onClose={() => setCartOpen(false)}
