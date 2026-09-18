@@ -19,7 +19,7 @@ Full-stack web app "3 Star Provisional Store" with dual roles (Owner/Admin + Cus
 - Customer: demo 9000000002 / user123; self-registration enabled
 
 ## Implemented (2026-09-18)
-- Mobile+password login/register, role-based redirect, brute-force lockout (5 tries/15 min, in-memory)
+- Mobile OR Email + password login (case-insensitive email lookup), registration with optional email, role-based redirect, brute-force lockout (5 tries/15 min, in-memory)
 - 45 seeded Tamil products, 3 categories, images, rate + cost rate + stock
 - Customer: category tabs, search, qty steppers, cart drawer (address + UPI/COD), order placement w/ stock decrement, orders with status stepper, wishlist, payment receipts, account editing
 - Admin: analytics (revenue, net profit from delivered orders, collected/pending, avg bill, order pipeline, low stock), inline inventory editing + add/delete, order status + payment marking (auto-creates transaction), transactions table, Sheets Sync setup page with copyable Code.gs

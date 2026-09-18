@@ -12,6 +12,7 @@ export default function Login() {
   const [mobile, setMobile] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export default function Login() {
     setError("");
     setLoading(true);
     try {
-      const payload = mode === "login" ? { mobile, password } : { mobile, password, name, address };
+      const payload = mode === "login" ? { identifier: mobile, password } : { mobile, password, name, email, address };
       const { data } = await api.post(`/auth/${mode}`, payload);
       login(data);
       toast.success(`வணக்கம், ${data.user.name}!`);
@@ -71,11 +72,11 @@ export default function Login() {
           )}
 
           <div className="mb-4">
-            <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Mobile Number</label>
+            <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Mobile Number or Email</label>
             <div className="mt-1 flex items-center rounded-xl border border-slate-200 focus-within:ring-2 focus-within:ring-emerald-600 overflow-hidden">
               <span className="pl-4 text-slate-400"><Phone size={16} /></span>
-              <input data-testid="login-mobile-input" required value={mobile} onChange={(e) => setMobile(e.target.value.replace(/\D/g, "").slice(0, 10))}
-                className="w-full px-3 py-3 text-sm focus:outline-none" placeholder="10-digit mobile" inputMode="numeric" />
+              <input data-testid="login-mobile-input" required value={mobile} onChange={(e) => setMobile(e.target.value.trim())}
+                className="w-full px-3 py-3 text-sm focus:outline-none" placeholder="Mobile number or email" />
             </div>
           </div>
 
@@ -90,6 +91,14 @@ export default function Login() {
               </button>
             </div>
           </div>
+
+          {mode === "register" && (
+            <div className="mb-4">
+              <label className="text-xs font-semibold text-slate-600 uppercase tracking-wider">Email (for email login)</label>
+              <input data-testid="register-email-input" type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+                className="mt-1 w-full rounded-xl border border-slate-200 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600" placeholder="you@example.com" />
+            </div>
+          )}
 
           {mode === "register" && (
             <div className="mb-4">
@@ -115,7 +124,7 @@ export default function Login() {
           <div className="mt-6 pt-5 border-t border-dashed border-slate-200">
             <p className="text-[11px] font-semibold text-slate-400 uppercase tracking-widest mb-2">Quick demo access</p>
             <div className="flex gap-2">
-              <button type="button" data-testid="demo-owner-button" onClick={() => fillDemo("9000000001", "admin123")}
+              <button type="button" data-testid="demo-owner-button" onClick={() => fillDemo("shaludhana1116@gmail.com", "admin123")}
                 className="flex-1 text-xs font-semibold bg-amber-50 text-amber-800 border border-amber-200 rounded-lg py-2 hover:bg-amber-100 transition">
                 Owner Demo
               </button>

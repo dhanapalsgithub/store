@@ -283,7 +283,8 @@ api_router = APIRouter(prefix="/api")
 
 
 class LoginBody(BaseModel):
-    mobile: str
+    identifier: Optional[str] = None
+    mobile: Optional[str] = None
     password: str
 
 
@@ -291,6 +292,7 @@ class RegisterBody(BaseModel):
     name: str
     mobile: str
     password: str
+    email: Optional[str] = ""
     address: Optional[str] = ""
 
 
@@ -409,12 +411,15 @@ async def health():
 
 @api_router.post("/auth/login")
 async def login(body: LoginBody):
-    key = body.mobile
+    login_id = (body.identifier or body.mobile or "").strip()
+    if not login_id:
+        raise HTTPException(status_code=400, detail="Enter your mobile number or email")
+    key = login_id.lower()
     locked_until = _login_attempts.get(key, {}).get("locked_until")
     if locked_until and datetime.now(timezone.utc) < locked_until:
         raise HTTPException(status_code=429, detail="Too many attempts. Try again in 15 minutes.")
     users = await store.list_rows("Users")
-    user = next((u for u in users if str(u.get("Mobile")) == body.mobile), None)
+    user = next((u for u in users if str(u.get("Mobile")) == login_id or str(u.get("Email", "")).lower() == key), None)
     if not user or not verify_password(body.password, str(user.get("Password", ""))):
         rec = _login_attempts.setdefault(key, {"count": 0})
         rec["count"] += 1
@@ -433,9 +438,12 @@ async def register(body: RegisterBody):
     users = await store.list_rows("Users")
     if any(str(u.get("Mobile")) == body.mobile for u in users):
         raise HTTPException(status_code=400, detail="Mobile number already registered")
+    email = body.email.strip().lower()
+    if email and any(str(u.get("Email", "")).lower() == email for u in users):
+        raise HTTPException(status_code=400, detail="Email already registered")
     user = {
         "Mobile": body.mobile, "Password": hash_password(body.password),
-        "Role": "Customer", "Name": body.name, "Email": "",
+        "Role": "Customer", "Name": body.name, "Email": email,
         "Address": body.address or "", "UserType": "Retail",
     }
     await store.insert_row("Users", user)

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UserCircle, MapPin, Phone, Save, BadgeCheck } from "lucide-react";
+import { UserCircle, MapPin, Phone, Mail, Save, BadgeCheck } from "lucide-react";
 import { toast } from "sonner";
 import api, { errMsg } from "@/lib/api";
 import { useAuth } from "@/App";
@@ -39,6 +39,7 @@ export default function Account() {
         <div>
           <p className="font-extrabold text-slate-900 text-lg" data-testid="account-name-display">{user?.name}</p>
           <p className="text-xs text-slate-500 flex items-center gap-1"><Phone size={11} /> {user?.mobile}</p>
+          {user?.email && <p className="text-xs text-slate-500 flex items-center gap-1"><Mail size={11} /> {user?.email}</p>}
           <span className="inline-flex items-center gap-1 text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 mt-1">
             <BadgeCheck size={11} /> {user?.role} • {user?.userType}
           </span>
