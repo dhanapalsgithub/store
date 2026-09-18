@@ -193,10 +193,13 @@ IMG = {
 }
 
 
+PLACEHOLDER_IMG = "https://placehold.co/640x480/f1f5f9/15803d?text=3+Star+Grocery"
+
+
 def P(pid, cat, ta, en, rate, stock, unit, img):
     return {
         "ProductID": pid, "Category": cat, "ProductName": ta, "ProductNameEn": en,
-        "Rate": rate, "CostRate": round(rate * 0.82, 2), "StockQty": stock, "Unit": unit, "Image": IMG[img],
+        "Rate": rate, "CostRate": round(rate * 0.82, 2), "StockQty": stock, "Unit": unit, "Image": PLACEHOLDER_IMG,
     }
 
 
@@ -487,7 +490,7 @@ async def add_product(body: ProductBody, user=Depends(owner_only)):
         "ProductNameEn": body.productNameEn or "", "Rate": body.rate,
         "CostRate": body.costRate or round(body.rate * 0.82, 2), "StockQty": body.stockQty,
         "Unit": body.unit or "1 kg",
-        "Image": body.image or "https://images.pexels.com/photos/7421306/pexels-photo-7421306.jpeg?auto=compress&cs=tinysrgb&w=640",
+        "Image": body.image or PLACEHOLDER_IMG,
     }
     await store.insert_row("Products", row)
     return norm_product(row)

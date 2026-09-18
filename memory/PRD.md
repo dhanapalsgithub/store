@@ -39,6 +39,9 @@ Full-stack web app "3 Star Provisional Store" with dual roles (Owner/Admin + Cus
 - **Voice ordering** (`components/store/VoiceOrder.jsx`): browser SpeechRecognition (ta-IN), speech → parsed items (Tamil/English/alias matching + qty extraction), confirm modal, place order, auto-opens WhatsApp with order details to 919941669513
 - "WhatsApp" send-order button on every My Orders card (`waOrderLink` helper in lib/api.js)
 
+### Iteration 4 (2026-09-18)
+- All product images replaced with a branded placeholder (`https://placehold.co/640x480/f1f5f9/15803d?text=3+Star+Grocery`) per owner request — DB updated (45/45), seed data + add-product default use `PLACEHOLDER_IMG` in server.py. Owner will add real images later (edit via Admin → Rates & Inventory, or the Image column in Sheets mode).
+
 ## Backlog
 - P0: User deploys Apps Script and sets APPS_SCRIPT_URL; verify Sheets-mode seeding (45 rows) works
 - P1: Fix wishlist delete scoping for Sheets mode (composite key — currently deletes first ProductID match); printable bill/invoice PDF
