@@ -8,7 +8,7 @@ const STEPS = ["Pending", "Shipped", "Delivered"];
 function Stepper({ status }) {
   const currentStatus = (status || "").trim();
   const idx = currentStatus === "Cancelled" ? -1 : STEPS.indexOf(currentStatus);
-  
+
   return (
     <div className="flex items-center gap-1 mt-3" data-testid="order-stepper">
       {STEPS.map((s, i) => {
@@ -73,7 +73,7 @@ export default function MyOrders() {
           }
 
           const orderId = String(o.OrderID || o.id || "");
-          
+
           // Check local storage overrides for instant admin updates reflection
           const localStatus = localStorage.getItem(`order_status_${orderId}`);
           const localPayment = localStorage.getItem(`order_payment_${orderId}`);
@@ -99,7 +99,7 @@ export default function MyOrders() {
   const filteredOrders = useMemo(() => {
     if (!Array.isArray(orders)) return [];
     return orders.filter((o) => {
-      const matchesSearch = searchQuery === "" || 
+      const matchesSearch = searchQuery === "" ||
         o.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
         o.status.toLowerCase().includes(searchQuery.toLowerCase()) ||
         (o.items || []).some(item => (item.name || item.products || "").toLowerCase().includes(searchQuery.toLowerCase()));
@@ -118,7 +118,7 @@ export default function MyOrders() {
 
   // Pagination Logic
   const totalPages = Math.max(1, Math.ceil(filteredOrders.length / itemsPerPage));
-  
+
   // Safe check if currentPage exceeds totalPages after filtering
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -168,7 +168,7 @@ export default function MyOrders() {
           <p className="text-sm text-slate-500">எனது ஆர்டர்கள் — track current & past orders</p>
         </div>
         {safeOrders.length > 0 && (
-          <button 
+          <button
             onClick={exportToCSV}
             className="flex items-center gap-1.5 px-3 py-2 bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 rounded-xl text-xs font-bold transition self-start sm:self-auto"
             data-testid="export-orders-csv"
@@ -183,9 +183,9 @@ export default function MyOrders() {
         <div className="flex flex-col sm:flex-row items-center gap-3 bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
           <div className="relative flex-1 w-full">
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input 
-              type="text" 
-              placeholder="Search by Order ID, Status, or Item Name..." 
+            <input
+              type="text"
+              placeholder="Search by Order ID, Status, or Item Name..."
               value={searchQuery}
               onChange={(e) => { setSearchQuery(e.target.value); setCurrentPage(1); }}
               className="w-full pl-9 pr-4 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-slate-50/50"
@@ -195,8 +195,8 @@ export default function MyOrders() {
           <div className="flex items-center gap-2 w-full sm:w-auto">
             <div className="relative flex-1 sm:flex-initial">
               <Calendar size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-              <input 
-                type="date" 
+              <input
+                type="date"
                 value={selectedDate}
                 onChange={(e) => { setSelectedDate(e.target.value); setCurrentPage(1); }}
                 className="w-full sm:w-auto pl-9 pr-3 py-2 text-xs border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-600 bg-slate-50/50 text-slate-600 font-medium"
@@ -204,7 +204,7 @@ export default function MyOrders() {
               />
             </div>
             {selectedDate && (
-              <button 
+              <button
                 onClick={() => { setSelectedDate(""); setCurrentPage(1); }}
                 className="text-xs text-red-600 hover:underline px-2 py-1 font-semibold whitespace-nowrap"
               >
@@ -244,23 +244,28 @@ export default function MyOrders() {
                       <p className="text-lg font-extrabold text-emerald-700 mt-1">{fmt(orderTotal)}</p>
                     </div>
                   </div>
-                  
+
                   <div className="bg-slate-50 rounded-xl p-3 space-y-1">
                     {(o.items || []).map((it, itemIndex) => {
                       const itemName = it.name || it.products || "Item";
                       const itemQty = Number(it.qty || 1);
+                      const itemUnit = it.unit || it.selectedUnit || ""; // Unit தகவலை எடுத்தல்
                       const itemRate = Number(it.rate || it.price || 0);
                       const uniqueItemKey = `${orderId}-item-${itemIndex}-${itemName}`;
 
                       return (
                         <div key={uniqueItemKey} className="flex justify-between text-xs">
-                          <span className="font-tamil font-semibold text-slate-700">{itemName} <span className="text-slate-400">× {itemQty}</span></span>
+                          <span className="font-tamil font-semibold text-slate-700">
+                            {itemName}
+                            <span className="text-slate-400">
+                              {itemUnit ? ` (${itemUnit})` : ""} × {itemQty}
+                            </span>
+                          </span>
                           <span className="font-bold text-slate-800">{fmt(itemRate * itemQty)}</span>
                         </div>
                       );
                     })}
                   </div>
-
                   <div className="flex items-center justify-between mt-3">
                     <span className={`text-[11px] font-bold px-2.5 py-1 rounded-full ${o.paymentStatus === "Paid" ? "bg-emerald-100 text-emerald-700" : "bg-red-100 text-red-600"}`} data-testid={`my-order-payment-${orderId}`}>
                       {o.paymentStatus || "Pending"}{o.paymentMethod ? ` • ${o.paymentMethod}` : ""}
@@ -277,8 +282,8 @@ export default function MyOrders() {
                   <p className="text-[11px] font-semibold text-slate-500 mt-2" data-testid={`order-tracking-note-${orderId}`}>
                     {o.status === "Delivered" ? "Delivered — நன்றி! Thank you for shopping with us."
                       : o.status === "Shipped" ? "Your order is on the way — out for delivery."
-                      : o.status === "Cancelled" ? "This order was cancelled. Contact store for help."
-                      : "Order received — packing in progress at the store."}
+                        : o.status === "Cancelled" ? "This order was cancelled. Contact store for help."
+                          : "Order received — packing in progress at the store."}
                   </p>
                 </div>
               );
