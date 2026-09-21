@@ -91,7 +91,7 @@ export default function AdminOrders() {
     }
   };
 
-  // Image Processing Logic for Thermal Printing (from PointOfSale.tsx)
+  // Image Processing Logic for Thermal Printing
   const getImageBytes = async (url, printWidth = 200) => {
     try {
       const img = new Image();
@@ -139,7 +139,7 @@ export default function AdminOrders() {
     }
   };
 
-  // Bluetooth Thermal Print Execution Function (from PointOfSale.tsx)
+  // Bluetooth Thermal Print Execution Function
   const handleThermalPrint = async (order) => {
     try {
       const nav = navigator;
@@ -185,7 +185,6 @@ export default function AdminOrders() {
       await char.writeValue(enc.encode(INIT + CENTER));
       await new Promise(r => setTimeout(r, 500));
 
-      // Print Logo if available
       const logoBytes = await getImageBytes('/logobf5.png', 120);
       if (logoBytes) {
         await sendLargeData(char, logoBytes);
@@ -202,11 +201,10 @@ export default function AdminOrders() {
       let billHeader = `\n${SIZE_BIG}${BOLD_ON}3 Star Grocery ${SIZE_NORMAL}${BOLD_OFF}\n` +
         `1/422 Srinivasa Nagar,\nKovur EB, Chennai - 600128\n` +
         `Mob: 9941669513\n--------------------------------\n` +
-        // `GST NO 33BEFPK6618J1ZF\n--------------------------------\n` +
         `DT: ${dateStr}  TM: ${timeStr}\nBill No: ${order.id}\n` +
         `Customer: ${order.CustomerName || order.customerName || "Customer"}\n` +
         `--------------------------------\n` +
-        `${BOLD_ON}  Item                 Rate        Qty   Amount${BOLD_OFF}\n` +
+        `${BOLD_ON}  Item               Rate     Qty   Amount${BOLD_OFF}\n` +
         `------------------------------------------\n`;
       await sendLargeData(char, billHeader);
 
@@ -215,7 +213,8 @@ export default function AdminOrders() {
 
       orderItems.forEach((item, index) => {
         const sno = (index + 1).toString().padEnd(3);
-        const itemName = String(item.name || item.products || "Item").substring(0, 10).padEnd(14);
+        const unitText = item.unit || item.selectedUnit ? `(${item.unit || item.selectedUnit})` : "";
+        const itemName = String(`${item.name || item.products || "Item"} ${unitText}`).substring(0, 10).padEnd(14);
         const rate = parseFloat(String(item.rate || item.price || 0)).toFixed(2).padStart(9);
         const qty = parseFloat(String(item.qty || item.quantity || 0)).toFixed(2).padStart(9);
         const itemTotal = parseFloat(String((item.rate || item.price || 0) * (item.qty || item.quantity || 0))).toFixed(2).padStart(7);
@@ -235,17 +234,6 @@ export default function AdminOrders() {
 
       await sendLargeData(char, billFooter);
 
-      if (paymentMode.toUpperCase() === 'SCANNER' || paymentMode.toUpperCase() === 'ONLINE') {
-        const qrBytes = await getImageBytes('/qr-code1.jpeg', 350);
-        if (qrBytes) {
-          await char.writeValue(enc.encode(CENTER));
-          for (let i = 0; i < qrBytes.length; i += 25) {
-            await char.writeValue(qrBytes.slice(i, i + 25));
-            await new Promise(r => setTimeout(r, 10));
-          }
-        }
-      }
-
       await char.writeValue(new Uint8Array([0x1b, 0x21, 0x01]));
       await char.writeValue(enc.encode(`${CENTER}No Returns, Exchanges, or Refunds. No Warranty for China Items.\n`));
       await char.writeValue(enc.encode(`${CENTER}Goods Sold are Final. Thank You! Visit Again BalaJi Fancy, Kovur.`));
@@ -255,7 +243,6 @@ export default function AdminOrders() {
       await new Promise(r => setTimeout(r, 1000));
       await char.writeValue(enc.encode('\n'));
 
-      // Auto Cutter command
       const CUT_PAPER = '\n\n\x1D\x56\x42\x00';
       try {
         await char.writeValue(enc.encode(CUT_PAPER));
@@ -437,13 +424,26 @@ export default function AdminOrders() {
                     </div>
                   </div>
 
+                  {/* இங்கேயும் யூனிட் மற்றும் அளவு சேர்த்து காட்டும்படி அப்டேட் செய்யப்பட்டுள்ளது */}
                   <div className="bg-slate-50 rounded-xl p-3 mb-4 space-y-1">
-                    {(o.items || []).map((it, i) => (
-                      <div key={i} className="flex justify-between text-xs">
-                        <span className="font-tamil font-semibold text-slate-700">{it.name || it.products} <span className="text-slate-400">× {it.qty || it.quantity}</span></span>
-                        <span className="font-bold text-slate-800">{fmt((it.rate || it.price || 0) * (it.qty || it.quantity || 0))}</span>
-                      </div>
-                    ))}
+                    {(o.items || []).map((it, i) => {
+                      const itemName = it.name || it.products || "Item";
+                      const itemQty = Number(it.qty || it.quantity || 1);
+                      const itemUnit = it.unit || it.selectedUnit || "";
+                      const itemRate = Number(it.rate || it.price || 0);
+
+                      return (
+                        <div key={i} className="flex justify-between text-xs">
+                          <span className="font-tamil font-semibold text-slate-700">
+                            {itemName} 
+                            <span className="text-slate-400">
+                              {itemUnit ? ` (${itemUnit})` : ""} × {itemQty}
+                            </span>
+                          </span>
+                          <span className="font-bold text-slate-800">{fmt(itemRate * itemQty)}</span>
+                        </div>
+                      );
+                    })}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-2">
@@ -519,12 +519,15 @@ export default function AdminOrders() {
             </div>
 
             <div className="space-y-1.5 max-h-48 overflow-y-auto text-xs py-1">
-              {(selectedOrderForPrint.items || []).map((it, idx) => (
-                <div key={idx} className="flex justify-between">
-                  <span>{idx + 1}. {it.name || it.products} ({it.rate || it.price} × {it.qty || it.quantity})</span>
-                  <span className="font-bold">{fmt((it.rate || it.price || 0) * (it.qty || it.quantity || 0))}</span>
-                </div>
-              ))}
+              {(selectedOrderForPrint.items || []).map((it, idx) => {
+                const uText = it.unit || it.selectedUnit ? ` (${it.unit || it.selectedUnit})` : "";
+                return (
+                  <div key={idx} className="flex justify-between">
+                    <span>{idx + 1}. {it.name || it.products}{uText} ({it.rate || it.price} × {it.qty || it.quantity})</span>
+                    <span className="font-bold">{fmt((it.rate || it.price || 0) * (it.qty || it.quantity || 0))}</span>
+                  </div>
+                );
+              })}
             </div>
 
             <div className="border-t border-dashed pt-3 space-y-1 text-xs">
