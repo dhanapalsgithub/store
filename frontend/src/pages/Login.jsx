@@ -2,8 +2,30 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Store as StoreIcon, Phone, Lock, Eye, EyeOff, UserPlus, LogIn } from "lucide-react";
 import { toast } from "sonner";
-import api, { errMsg } from "@/lib/api";
+import { appsScriptRequest, errMsg } from "@/lib/api";
 import { useAuth } from "@/App";
+
+// Test IDs for the auth feature (login, register, password reset, logout).
+export const LOGIN = {
+  emailInput: 'login-email-input',
+  passwordInput: 'login-password-input',
+  submitButton: 'login-submit-button',
+  forgotPasswordLink: 'login-forgot-password-link',
+  registerLink: 'login-register-link',
+};
+
+export const REGISTER = {
+  nameInput: 'register-name-input',
+  emailInput: 'register-email-input',
+  passwordInput: 'register-password-input',
+  passwordConfirmInput: 'register-password-confirm-input',
+  submitButton: 'register-submit-button',
+  loginLink: 'register-login-link',
+};
+
+export const LOGOUT = {
+  button: 'logout-button',
+};
 
 export default function Login() {
   const { login } = useAuth();
@@ -22,13 +44,101 @@ export default function Login() {
     e.preventDefault();
     setError("");
     setLoading(true);
+
     try {
-      const payload = mode === "login" ? { identifier: mobile, password } : { mobile, password, name, email, address };
-      const { data } = await api.post(`/auth/${mode}`, payload);
-      login(data);
-      toast.success(`வணக்கம், ${data.user.name}!`);
-      navigate(data.user.role === "Owner" ? "/admin" : "/store", { replace: true });
+      if (mode === "login") {
+        // 1. Apps Script மூலம் பயனர்களின் பட்டியலைப் பெறுதல்
+        const res = await appsScriptRequest({
+          action: "list",
+          sheet: "Users"
+        });
+
+        const users = res.data || [];
+        const inputId = String(mobile || "").trim().toLowerCase();
+        const inputPw = String(password || "").trim();
+
+        // 2. பயனர் மற்றும் பாஸ்வேர்டு சரிபார்த்தல்
+        const user = users.find(
+          (u) =>
+            (String(u.Mobile || "").trim().toLowerCase() === inputId ||
+              String(u.Email || "").trim().toLowerCase() === inputId) &&
+            String(u.Password || "").trim() === inputPw
+        );
+
+        if (user) {
+          const rawRole = String(user.Role || user.role || user.UserType || user["User type"] || "").trim().toLowerCase();
+          const isOwner = rawRole === "owner" || inputId === "shaludhana1116@gmail.com" || inputId === "9000000001";
+
+          const authData = {
+            token: "apps-script-token-" + Date.now(),
+            user: {
+              name: user.Name || (isOwner ? "Owner" : "Customer"),
+              mobile: user.Mobile,
+              email: user.Email,
+              role: isOwner ? "Owner" : "Customer",
+              address: user.Address || ""
+            }
+          };
+
+          login(authData);
+          toast.success(`வணக்கம், ${authData.user.name}!`);
+
+          // Owner ஆக இருந்தால் /admin-க்குச் செல்லும், மற்றவர்கள் /store-க்குச் செல்வார்கள்
+          navigate(isOwner ? "/admin" : "/store", { replace: true });
+        } else {
+          setError("தவறான மொபைல் எண்/மின்னஞ்சல் அல்லது கடவுச்சொல்!");
+        }
+      } else {
+        // 3. Register Logic (புதிய கணக்கை உருவாக்குதல்)
+        if (!name.trim()) {
+          setError("தயவுசெய்து உங்கள் பெயரை உள்ளிடவும்.");
+          setLoading(false);
+          return;
+        }
+        if (!mobile.trim()) {
+          setError("தயவுசெய்து மொபைல் எண்ணை உள்ளிடவும்.");
+          setLoading(false);
+          return;
+        }
+
+        const payload = {
+          action: "register", // "create" என்பதற்குப் பதிலாக "register"
+          sheet: "Users",
+          data: {
+            Name: name.trim(),
+            Mobile: mobile.trim(),
+            Email: email.trim(),
+            Password: password.trim(),
+            Address: address.trim(),
+            Role: "Customer"
+          }
+        };
+
+        const res = await appsScriptRequest(payload);
+
+        if (res && (res.ok !== false)) {
+          toast.success("கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!");
+
+          // பதிவு செய்தவுடன் ஆட்டோமேட்டிக்காக லாகின் செய்து கொள்ளுதல்
+          const authData = {
+            token: "apps-script-token-" + Date.now(),
+            user: {
+              name: name.trim(),
+              mobile: mobile.trim(),
+              email: email.trim(),
+              role: "Customer",
+              address: address.trim()
+            }
+          };
+
+          login(authData);
+          navigate("/store", { replace: true });
+        } else {
+          setError(res.error || "பதிவு செய்வதில் பிழை ஏற்பட்டுள்ளது. மீண்டும் முயற்சிக்கவும்.");
+        }
+      }
     } catch (err) {
+      console.error("Auth Error:", err);
       setError(errMsg(err));
     } finally {
       setLoading(false);

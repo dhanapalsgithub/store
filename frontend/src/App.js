@@ -5,6 +5,8 @@ import "@/index.css";
 import api from "@/lib/api";
 import Login from "@/pages/Login";
 import Admin from "@/pages/Admin";
+import Purchases from "./components/admin/Purchases";
+import PartyPayments from "./components/admin/PartyPayments"; // Imported PartyPayments page component
 import Store from "@/pages/Store";
 
 const AuthCtx = createContext(null);
@@ -15,9 +17,17 @@ function AuthProvider({ children }) {
 
   useEffect(() => {
     const token = localStorage.getItem("sps_token");
-    if (!token) return setUser(null);
+    if (!token) {
+      setUser(null);
+      return;
+    }
+    
+    // Check user profile via API adapter (reads from localStorage securely)
     api.get("/auth/me")
-      .then((r) => setUser(r.data))
+      .then((r) => {
+        const userData = r.data?.user || r.data;
+        setUser(userData?.id || userData?.email || userData?.role ? userData : null);
+      })
       .catch(() => {
         localStorage.removeItem("sps_token");
         setUser(null);
@@ -26,11 +36,15 @@ function AuthProvider({ children }) {
 
   const login = useCallback((data) => {
     localStorage.setItem("sps_token", data.token);
+    if (data.user) {
+      localStorage.setItem("sps_user", JSON.stringify(data.user));
+    }
     setUser(data.user);
   }, []);
 
   const logout = useCallback(() => {
     localStorage.removeItem("sps_token");
+    localStorage.removeItem("sps_user");
     setUser(null);
   }, []);
 
@@ -75,6 +89,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginRoute />} />
           <Route path="/admin" element={<Guard role="Owner"><Admin /></Guard>} />
+          <Route path="/admin/purchases" element={<Guard role="Owner"><Purchases /></Guard>} />
+          <Route path="/admin/partypayments" element={<Guard role="Owner"><PartyPayments /></Guard>} /> {/* Added PartyPayments Route */}
           <Route path="/store" element={<Guard role="Customer"><Store /></Guard>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

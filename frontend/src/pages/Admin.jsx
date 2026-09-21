@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { LayoutDashboard, Package, ClipboardList, Receipt, Sheet } from "lucide-react";
+import { LayoutDashboard, Package, ClipboardList, Receipt, Sheet, FileText, CreditCard } from "lucide-react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Overview from "@/components/admin/Overview";
@@ -7,10 +7,14 @@ import Inventory from "@/components/admin/Inventory";
 import AdminOrders from "@/components/admin/AdminOrders";
 import AdminTransactions from "@/components/admin/AdminTransactions";
 import SheetsSetup from "@/components/admin/SheetsSetup";
+import Purchases from "../components/admin/Purchases";
+import PartyPayments from "../components/admin/PartyPayments"; // Imported PartyPayments component
 
 const TABS = [
   { id: "overview", label: "Analytics", icon: <LayoutDashboard size={14} /> },
   { id: "inventory", label: "Rates & Inventory", icon: <Package size={14} /> },
+  { id: "purchases", label: "Purchases", icon: <FileText size={14} /> },
+  { id: "partypayments", label: "Party Payments", icon: <CreditCard size={14} /> }, // Added Party Payments Tab
   { id: "orders", label: "Orders", icon: <ClipboardList size={14} /> },
   { id: "transactions", label: "Transactions", icon: <Receipt size={14} /> },
   { id: "setup", label: "Sheets Sync", icon: <Sheet size={14} /> },
@@ -24,6 +28,8 @@ export default function Admin() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-6">
         {tab === "overview" && <Overview />}
         {tab === "inventory" && <Inventory />}
+        {tab === "purchases" && <Purchases />}
+        {tab === "partypayments" && <PartyPayments />} {/* Render PartyPayments component */}
         {tab === "orders" && <AdminOrders />}
         {tab === "transactions" && <AdminTransactions />}
         {tab === "setup" && <SheetsSetup />}

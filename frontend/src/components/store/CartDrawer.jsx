@@ -7,7 +7,13 @@ import { useAuth } from "@/App";
 export default function CartDrawer({ cart, setQty, onClose, onPlaced }) {
   const { user } = useAuth();
   const items = Object.values(cart);
-  const total = items.reduce((s, i) => s + i.product.rate * i.qty, 0);
+  
+  const total = items.reduce((s, i) => {
+    const p = i.product || i;
+    const itemRate = Number(p["Retail Price"] || p.rate || p.price || 0);
+    return s + itemRate * i.qty;
+  }, 0);
+
   const [payment, setPayment] = useState("Cash on Delivery");
   const [address, setAddress] = useState(user?.address || "");
   const [placing, setPlacing] = useState(false);
@@ -20,12 +26,33 @@ export default function CartDrawer({ cart, setQty, onClose, onPlaced }) {
     }
     setPlacing(true);
     try {
-      const { data } = await api.post("/orders", {
-        items: items.map((i) => ({ productId: i.product.id, qty: i.qty })),
-        paymentMethod: payment,
-        address,
-      });
-      toast.success(`Order ${data.id} placed! ${payment === "UPI" ? "Payment recorded." : "Pay on delivery."}`);
+      const orderPayload = {
+        sheet: "Orders",
+        action: "insert",
+        row: {
+          OrderID: "ORD-" + Date.now().toString().slice(-6),
+          CustomerMobile: user?.mobile || user?.phone || "N/A",
+          CustomerName: user?.name || user?.username || "Customer",
+          ItemsJSON: JSON.stringify(items.map(i => {
+            const p = i.product || i;
+            return {
+              name: p.products || p.name || "Product",
+              rate: Number(p["Retail Price"] || p.rate || p.price || 0),
+              qty: i.qty,
+              unit: p.Unit || p.unit || ""
+            };
+          })),
+          TotalAmount: total,
+          PaymentStatus: payment === "UPI" ? "Paid" : "Pending",
+          PaymentMethod: payment,
+          Date: new Date().toISOString(),
+          Status: "Pending",
+          Address: address
+        }
+      };
+
+      await api.post("/orders", orderPayload);
+      toast.success(`Order placed successfully!`);
       onPlaced();
     } catch (e) {
       toast.error(errMsg(e));
@@ -50,24 +77,34 @@ export default function CartDrawer({ cart, setQty, onClose, onPlaced }) {
           {items.length === 0 ? (
             <p className="text-center text-slate-400 py-16 text-sm" data-testid="cart-empty-message">Your cart is empty</p>
           ) : (
-            items.map(({ product: p, qty }) => (
-              <div key={p.id} className="bg-white rounded-2xl border border-slate-100 p-3 flex items-center gap-3" data-testid={`cart-item-${p.id}`}>
-                <img src={p.image} alt={p.nameEn} className="w-14 h-14 rounded-xl object-cover bg-slate-100" />
-                <div className="flex-1 min-w-0">
-                  <p className="font-tamil text-sm font-bold text-slate-800 truncate">{p.name}</p>
-                  <p className="text-[11px] text-slate-400">{fmt(p.rate)} / {p.unit}</p>
-                  <div className="flex items-center gap-1 mt-1.5">
-                    <button data-testid={`cart-minus-${p.id}`} onClick={() => setQty(p.id, qty - 1)} className="w-6 h-6 rounded-md bg-slate-100 hover:bg-red-100 flex items-center justify-center transition"><Minus size={12} /></button>
-                    <span className="w-8 text-center text-sm font-extrabold" data-testid={`cart-qty-${p.id}`}>{qty}</span>
-                    <button data-testid={`cart-plus-${p.id}`} onClick={() => setQty(p.id, Math.min(qty + 1, p.stock), p)} className="w-6 h-6 rounded-md bg-slate-100 hover:bg-emerald-100 flex items-center justify-center transition"><Plus size={12} /></button>
+            items.map((cartItem) => {
+              const p = cartItem.product || cartItem;
+              const pId = p.id || p.ProductsID;
+              const productName = p.products || p.name || "Product";
+              const productRate = Number(p["Retail Price"] || p.rate || p.price || 0);
+              const productUnit = p.Unit || p.unit || "";
+              const productImage = p.image || "https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=400&q=80";
+              const stockVal = Number(p.Stock ?? p.stock ?? 99);
+
+              return (
+                <div key={pId} className="bg-white rounded-2xl border border-slate-100 p-3 flex items-center gap-3" data-testid={`cart-item-${pId}`}>
+                  <img src={productImage} alt={productName} className="w-14 h-14 rounded-xl object-cover bg-slate-100" />
+                  <div className="flex-1 min-w-0">
+                    <p className="font-tamil text-sm font-bold text-slate-800 truncate">{productName}</p>
+                    <p className="text-[11px] text-slate-400">{fmt(productRate)} / {productUnit}</p>
+                    <div className="flex items-center gap-1 mt-1.5">
+                      <button data-testid={`cart-minus-${pId}`} onClick={() => setQty(pId, cartItem.qty - 1, p)} className="w-6 h-6 rounded-md bg-slate-100 hover:bg-red-100 flex items-center justify-center transition"><Minus size={12} /></button>
+                      <span className="w-8 text-center text-sm font-extrabold" data-testid={`cart-qty-${pId}`}>{cartItem.qty}</span>
+                      <button data-testid={`cart-plus-${pId}`} onClick={() => setQty(pId, Math.min(cartItem.qty + 1, stockVal), p)} className="w-6 h-6 rounded-md bg-slate-100 hover:bg-emerald-100 flex items-center justify-center transition"><Plus size={12} /></button>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-extrabold text-emerald-700 text-sm">{fmt(productRate * cartItem.qty)}</p>
+                    <button data-testid={`cart-remove-${pId}`} onClick={() => setQty(pId, 0, p)} className="text-slate-300 hover:text-red-500 mt-1 transition"><Trash2 size={14} /></button>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="font-extrabold text-emerald-700 text-sm">{fmt(p.rate * qty)}</p>
-                  <button data-testid={`cart-remove-${p.id}`} onClick={() => setQty(p.id, 0)} className="text-slate-300 hover:text-red-500 mt-1 transition"><Trash2 size={14} /></button>
-                </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 

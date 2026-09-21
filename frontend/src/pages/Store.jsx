@@ -35,7 +35,7 @@ export default function Store() {
   const addToCart = useCallback((product, qty = 1) => {
     setCart((c) => {
       const cur = c[product.id]?.qty || 0;
-      const next = Math.min(cur + qty, product.stock);
+      const next = Math.min(cur + qty, product.stock || 999);
       return { ...c, [product.id]: { product, qty: next } };
     });
   }, []);
